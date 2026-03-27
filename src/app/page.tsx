@@ -5,7 +5,10 @@ export default async function WelcomePage() {
   const content = await getWelcomeContent();
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black">
+    <main
+      style={{ backgroundImage: "url('/welcome-background.jpg')" }}
+      className="flex min-h-screen items-center justify-center bg-cover bg-center"
+    >
       <TextBox
         heading={content.heading}
         subheading={content.subheading}
