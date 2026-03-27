@@ -10,6 +10,7 @@ export default async function WelcomePage() {
         heading={content.heading}
         subheading={content.subheading}
         infoText={content.infoText}
+        infoTextWidth={600}
       />
     </main>
   );
