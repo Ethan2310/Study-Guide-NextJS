@@ -6,21 +6,32 @@ import {
     CarouselNext,
 } from "@/components/ui/carousel";
 import { getStudyCategories } from "@/lib/study-categories";
+import { getSubCategoryData, type SubCategoryData } from "@/lib/subcategory-data";
+import CategoryCard from "@/app/_client-components/category-card";
 
 export default async function StudyCategoriesPage() {
     const categories = await getStudyCategories();
 
+    const subcategoryDataMap: Record<string, SubCategoryData[]> = {};
+    await Promise.all(
+        categories.flatMap((cat) =>
+            cat.subcategories.map(async (sub) => {
+                subcategoryDataMap[sub] = await getSubCategoryData(sub);
+            })
+        )
+    );
+
     return (
-        <main className="flex flex-col min-h-screen items-center justify-center gap-8">
+        <main className="flex flex-col min-h-screen items-center justify-center gap-8 px-4">
             <h1 className="heading">Study Categories</h1>
-            <Carousel className="w-full max-w-md">
+            <Carousel className="w-full max-w-4xl">
                 <CarouselContent>
                     {categories.map((item) => (
                         <CarouselItem key={item.category}>
-                            <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-10 text-center shadow-sm">
-                                <h2 className="subheading text-card-foreground">{item.category}</h2>
-                                <p className="text-sm text-muted-foreground">{item.description}</p>
-                            </div>
+                            <CategoryCard
+                                category={item}
+                                subcategoryDataMap={subcategoryDataMap}
+                            />
                         </CarouselItem>
                     ))}
                 </CarouselContent>
