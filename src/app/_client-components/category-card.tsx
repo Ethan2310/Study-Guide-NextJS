@@ -13,17 +13,27 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import type { StudyCategory } from "@/lib/study-categories";
-import type { SubCategoryData } from "@/lib/subcategory-data";
+import type { SubCategoryData } from "@/lib/study-categories";
+
+export interface SubCategoryEntry {
+    data: SubCategoryData[] | null;
+    onEnterSubCategory: () => Promise<void>;
+}
 
 interface CategoryCardProps {
     category: StudyCategory;
-    subcategoryDataMap: Record<string, SubCategoryData[]>;
+    subcategoryDataMap: Record<string, SubCategoryEntry>;
 }
 
 export default function CategoryCard({ category, subcategoryDataMap }: CategoryCardProps) {
     const [activeTab, setActiveTab] = useState(category.subcategories[0]);
 
-    const rows = subcategoryDataMap[activeTab] ?? [];
+    const handleTabChange = (sub: string) => {
+        setActiveTab(sub);
+        subcategoryDataMap[sub]?.onEnterSubCategory();
+    };
+
+    const rows = subcategoryDataMap[activeTab]?.data;
 
     return (
         <Card className="w-full">
@@ -32,7 +42,7 @@ export default function CategoryCard({ category, subcategoryDataMap }: CategoryC
                     <h2 className="text-base font-semibold">{category.category}</h2>
                     <p className="text-sm text-muted-foreground">{category.description}</p>
                 </div>
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList>
                         {category.subcategories.map((sub) => (
                             <TabsTrigger key={sub} value={sub}>
@@ -56,7 +66,13 @@ export default function CategoryCard({ category, subcategoryDataMap }: CategoryC
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {rows.length === 0 ? (
+                        {rows === null || rows === undefined ? (
+                            <TableRow>
+                                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                                    Loading...
+                                </TableCell>
+                            </TableRow>
+                        ) : rows.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={4} className="text-center text-muted-foreground">
                                     No data available.
