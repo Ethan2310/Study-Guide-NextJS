@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 export interface StudyCategory {
     category: string;
     description: string;
@@ -357,7 +359,7 @@ export async function getSubCategoryData(subcategory: string): Promise<SubCatego
     return subcategoryDataMap[subcategory] ?? [];
 }
 
-export async function getStudyCategories(): Promise<StudyCategory[]> {
+export const getStudyCategories = cache(async function getStudyCategories(): Promise<StudyCategory[]> {
     return [
         {
             category: "Mathematics",
@@ -385,4 +387,4 @@ export async function getStudyCategories(): Promise<StudyCategory[]> {
             subcategories: ["Grammar", "Vocabulary", "Writing", "Speaking"],
         },
     ];
-}
+});

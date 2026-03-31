@@ -1,5 +1,6 @@
 import { getStudyCategories } from "@/lib/study-categories";
 import { getCurrentUser } from "@/lib/user";
+import { StudyCategoriesProvider } from "@/context/study-categories-context";
 import LearnSidebar from "@/app/_client-components/learn-sidebar";
 
 export default async function LearnCategoryLayout({
@@ -13,8 +14,10 @@ export default async function LearnCategoryLayout({
     ]);
 
     return (
-        <LearnSidebar categories={categories} user={user}>
-            {children}
-        </LearnSidebar>
+        <StudyCategoriesProvider categories={categories}>
+            <LearnSidebar user={user}>
+                {children}
+            </LearnSidebar>
+        </StudyCategoriesProvider>
     );
 }

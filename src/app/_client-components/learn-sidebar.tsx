@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
     Sidebar,
     SidebarContent,
@@ -15,16 +16,16 @@ import {
     SidebarProvider,
     SidebarInset,
 } from "@/components/ui/sidebar";
-import type { StudyCategory } from "@/lib/study-categories";
+import { useStudyCategories } from "@/context/study-categories-context";
 import type { User } from "@/lib/user";
 
 interface LearnSidebarProps {
-    categories: StudyCategory[];
     user: User;
     children: React.ReactNode;
 }
 
-export default function LearnSidebar({ categories, user, children }: LearnSidebarProps) {
+export default function LearnSidebar({ user, children }: LearnSidebarProps) {
+    const categories = useStudyCategories();
     return (
         <SidebarProvider>
             <Sidebar>
@@ -43,9 +44,9 @@ export default function LearnSidebar({ categories, user, children }: LearnSideba
                                 {categories.map((c) => (
                                     <SidebarMenuItem key={c.category}>
                                         <SidebarMenuButton asChild>
-                                            <a href={`/study-categories/learn-category/${c.category.toLowerCase().replace(/\s+/g, "-")}`}>
+                                            <Link href={`/study-categories/learn-category/${c.category.toLowerCase().replace(/\s+/g, "-")}`}>
                                                 {c.category}
-                                            </a>
+                                            </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 ))}
