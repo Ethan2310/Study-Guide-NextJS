@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
@@ -27,6 +28,9 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category, subcategoryDataMap }: CategoryCardProps) {
     const [activeTab, setActiveTab] = useState(category.subcategories[0]);
+    const router = useRouter();
+
+    const slug = category.category.toLowerCase().replace(/\s+/g, "-");
 
     const handleTabChange = (sub: string) => {
         setActiveTab(sub);
@@ -92,7 +96,7 @@ export default function CategoryCard({ category, subcategoryDataMap }: CategoryC
                 </Table>
             </CardContent>
             <CardFooter>
-                <Button>Continue Learning</Button>
+                <Button onClick={() => router.push(`/study-categories/learn-category/${slug}`)}>Continue Learning</Button>
             </CardFooter>
         </Card>
     );
