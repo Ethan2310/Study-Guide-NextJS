@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
     Sidebar,
     SidebarContent,
@@ -26,6 +27,7 @@ interface LearnSidebarProps {
 
 export default function LearnSidebar({ user, children }: LearnSidebarProps) {
     const categories = useStudyCategories();
+    const pathname = usePathname();
     return (
         <SidebarProvider>
             <Sidebar>
@@ -41,15 +43,19 @@ export default function LearnSidebar({ user, children }: LearnSidebarProps) {
                         <SidebarGroupLabel>Categories</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {categories.map((c) => (
-                                    <SidebarMenuItem key={c.category}>
-                                        <SidebarMenuButton asChild>
-                                            <Link href={`/study-categories/learn-category/${c.category.toLowerCase().replace(/\s+/g, "-")}`}>
-                                                {c.category}
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
+                                {categories.map((c) => {
+                                    const slug = c.category.toLowerCase().replace(/\s+/g, "-");
+                                    const href = `/study-categories/learn-category/${slug}`;
+                                    return (
+                                        <SidebarMenuItem key={c.category}>
+                                            <SidebarMenuButton asChild isActive={pathname === href}>
+                                                <Link href={href}>
+                                                    {c.category}
+                                                </Link>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    );
+                                })}
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
