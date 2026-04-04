@@ -1,15 +1,17 @@
+import { notFound, redirect } from "next/navigation";
+import { getStudyCategories } from "@/lib/study-categories";
+
 interface LearnCategoryPageProps {
     params: Promise<{ category: string }>;
 }
 
 export default async function LearnCategoryPage({ params }: LearnCategoryPageProps) {
     const { category } = await params;
-
-    return (
-        <main className="flex flex-1 flex-col gap-4 p-8">
-            <h1 className="text-2xl font-semibold capitalize">
-                {category.replace(/-/g, " ")}
-            </h1>
-        </main>
+    const categories = await getStudyCategories();
+    const found = categories.find(
+        (c) => c.category.toLowerCase().replace(/\s+/g, "-") === category
     );
+    if (!found) notFound();
+    const firstSub = found.subcategories[0].toLowerCase().replace(/\s+/g, "-");
+    redirect(`/study-categories/learn-category/${category}/learn-sub-category/${firstSub}`);
 }
