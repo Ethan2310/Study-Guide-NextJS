@@ -1,19 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SubCategoryData } from "@/lib/study-categories";
 
 interface LearningStepsTabsProps {
     learningSteps: SubCategoryData[];
+    activeStep: string;
+    onStepChange: (stepName: string) => void;
 }
 
-export default function LearningStepsTabs({ learningSteps }: LearningStepsTabsProps) {
-    const firstSlug = learningSteps[0]?.learningStep.toLowerCase().replace(/\s+/g, "-") ?? "";
-    const [active, setActive] = useState(firstSlug);
-
+export default function LearningStepsTabs({ learningSteps, activeStep, onStepChange }: LearningStepsTabsProps) {
     return (
-        <Tabs value={active} onValueChange={setActive}>
+        <Tabs
+            value={activeStep.toLowerCase().replace(/\s+/g, "-")}
+            onValueChange={(slug) => {
+                const step = learningSteps.find(
+                    (s) => s.learningStep.toLowerCase().replace(/\s+/g, "-") === slug
+                );
+                if (step) onStepChange(step.learningStep);
+            }}
+        >
             <TabsList>
                 {learningSteps.map((step) => {
                     const slug = step.learningStep.toLowerCase().replace(/\s+/g, "-");
@@ -24,23 +31,7 @@ export default function LearningStepsTabs({ learningSteps }: LearningStepsTabsPr
                     );
                 })}
             </TabsList>
-
-            {learningSteps.map((step) => {
-                const slug = step.learningStep.toLowerCase().replace(/\s+/g, "-");
-                return (
-                    <TabsContent key={slug} value={slug}>
-                        <div className="flex flex-col gap-2 pt-4">
-                            <p className="text-sm text-muted-foreground">{step.description}</p>
-                            <p className="text-sm">
-                                Status: <span className="font-medium">{step.status}</span>
-                            </p>
-                            <p className="text-sm">
-                                Progress: <span className="font-medium">{step.progressCompleted}</span>
-                            </p>
-                        </div>
-                    </TabsContent>
-                );
-            })}
         </Tabs>
     );
 }
+
