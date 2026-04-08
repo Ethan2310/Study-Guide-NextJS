@@ -34,7 +34,7 @@ interface LearnSidebarProps {
 
 function CategoryItem({ c, pathname }: { c: StudyCategory; pathname: string }) {
     const categorySlug = c.category.toLowerCase().replace(/\s+/g, "-");
-    const categoryBase = `/study-categories/learn-category/${categorySlug}`;
+    const categoryBase = `/study-categories/${categorySlug}`;
     const isCategoryActive = pathname.startsWith(categoryBase);
     const [isOpen, setIsOpen] = useState(isCategoryActive);
 
@@ -59,7 +59,7 @@ function CategoryItem({ c, pathname }: { c: StudyCategory; pathname: string }) {
                     <SidebarMenuSub>
                         {c.subcategories.map((sub) => {
                             const subSlug = sub.toLowerCase().replace(/\s+/g, "-");
-                            const href = `${categoryBase}/learn-sub-category/${subSlug}`;
+                            const href = `${categoryBase}/${subSlug}`;
                             return (
                                 <SidebarMenuSubItem key={sub}>
                                     <SidebarMenuSubButton

@@ -13,5 +13,5 @@ export default async function LearnCategoryPage({ params }: LearnCategoryPagePro
     );
     if (!found) notFound();
     const firstSub = found.subcategories[0].toLowerCase().replace(/\s+/g, "-");
-    redirect(`/study-categories/learn-category/${category}/learn-sub-category/${firstSub}`);
+    redirect(`/study-categories/${category}/${firstSub}`);
 }

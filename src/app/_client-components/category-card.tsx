@@ -96,7 +96,7 @@ export default function CategoryCard({ category, subcategoryDataMap }: CategoryC
                 </Table>
             </CardContent>
             <CardFooter>
-                <Button onClick={() => router.push(`/study-categories/learn-category/${slug}`)}>Continue Learning</Button>
+                <Button onClick={() => router.push(`/study-categories/${slug}`)}>Continue Learning</Button>
             </CardFooter>
         </Card>
     );
