@@ -12,6 +12,7 @@ import {
 import CategoryCard, { type SubCategoryEntry } from "./category-card";
 import type { StudyCategory } from "@/lib/study-categories";
 import type { SubCategoryData } from "@/lib/study-categories";
+import { useLoadSubCategories } from "@/context/sub-categories-context";
 
 interface Props {
     categories: StudyCategory[];
@@ -23,6 +24,8 @@ export default function StudyCategoriesCarousel({ categories, fetchSubCategoryDa
     const [loadedData, setLoadedData] = useState<Record<string, SubCategoryData[]>>({});
     // Tracks in-flight or completed fetches to prevent duplicate requests
     const fetchedRef = useRef(new Set<string>());
+
+    const loadSubCategories = useLoadSubCategories();
 
     const loadSubCategory = useCallback(async (sub: string) => {
         if (fetchedRef.current.has(sub)) return;
@@ -37,8 +40,12 @@ export default function StudyCategoriesCarousel({ categories, fetchSubCategoryDa
 
         const onSelect = () => {
             const index = api.selectedScrollSnap();
-            const firstSub = categories[index]?.subcategories[0];
-            if (firstSub) loadSubCategory(firstSub);
+            const category = categories[index];
+            if (category) {
+                loadSubCategories(category);
+                const firstSub = category.subcategories[0];
+                if (firstSub) loadSubCategory(firstSub);
+            }
         };
 
         api.on("select", onSelect);
@@ -47,7 +54,7 @@ export default function StudyCategoriesCarousel({ categories, fetchSubCategoryDa
         return () => {
             api.off("select", onSelect);
         };
-    }, [api, categories, loadSubCategory]);
+    }, [api, categories, loadSubCategory, loadSubCategories]);
 
     return (
         <Carousel setApi={setApi} className="w-full max-w-4xl">
