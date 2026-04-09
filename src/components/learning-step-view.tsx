@@ -1,7 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import type { LearningStepDetail } from "@/lib/study-categories";
 
 interface LearningStepViewProps {
@@ -9,19 +9,21 @@ interface LearningStepViewProps {
 }
 
 export default function LearningStepView({ detail }: LearningStepViewProps) {
+    const router = useRouter();
+
     return (
         <div className="aspect-square w-full border border-black rounded-lg flex overflow-hidden">
             {/* ── Left half: Links (top) + Notes (bottom) ─────────────────── */}
             <div className="flex flex-1 flex-col overflow-hidden">
                 {/* Links */}
-                <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
+                <div className="flex flex-col gap-2 p-4 h-[45%]">
                     <div>
                         <p className="text-sm font-semibold">Links</p>
                         <p className="text-xs text-muted-foreground">
                             External resources for this learning step
                         </p>
                     </div>
-                    <ul className="flex flex-col gap-1.5">
+                    <ul className="flex flex-col gap-1.5 overflow-y-auto flex-1">
                         {detail.links.map((link) => (
                             <li key={link} className="text-xs">
                                 <a
@@ -35,24 +37,43 @@ export default function LearningStepView({ detail }: LearningStepViewProps) {
                             </li>
                         ))}
                     </ul>
+                    <button
+                        onClick={() => console.log("Add link: to be implemented")}
+                        className="mt-auto w-full rounded-md border border-dashed border-muted-foreground/50 py-1.5 text-xs text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+                    >
+                        + Add Link
+                    </button>
                 </div>
 
                 {/* Horizontal separator between links and notes */}
                 <Separator />
 
                 {/* Notes */}
-                <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
+                <div className="flex flex-col gap-2 p-4 h-[45%]">
                     <div>
                         <p className="text-sm font-semibold">Notes</p>
                         <p className="text-xs text-muted-foreground">
                             Saved note files attached to this step
                         </p>
                     </div>
-                    <Textarea
-                        readOnly
-                        value={detail.notes.join("\n")}
-                        className="flex-1 resize-none text-xs"
-                    />
+                    <ul className="flex flex-col gap-1.5 overflow-y-auto flex-1">
+                        {detail.notes.map((note) => (
+                            <li key={note} className="text-xs">
+                                <button
+                                    onClick={() => router.push(`/notes/${encodeURIComponent(note)}`)}
+                                    className="text-left text-blue-600 underline underline-offset-2 hover:text-blue-800"
+                                >
+                                    {note}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    <button
+                        onClick={() => router.push("/notes/new-note")}
+                        className="mt-auto w-full rounded-md border border-dashed border-muted-foreground/50 py-1.5 text-xs text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+                    >
+                        + Add Note
+                    </button>
                 </div>
             </div>
 
